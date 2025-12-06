@@ -43,6 +43,9 @@ class TrigramModel:
         """Build 3-gram model"""
         print("[*] Building 3-gram model...")
 
+        # Store vocabulary
+        self.vocab = set(words)
+
         # Add sentence markers
         words_marked = ["<start>"] + words + ["<end>"]
 

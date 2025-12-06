@@ -1,14 +1,14 @@
 
 ======================================================================
   INTERACTIVE TEXT GENERATION WITH 3-GRAM MODEL
-  Accuracy: 93.5% | Pure Python Implementation
+  Dataset: COMBINED | Combined dataset (recommended)
 ======================================================================
 
-Loading model...
+Loading combined dataset...
 Model Ready!
-   Training data: 1,676 words
-   Vocabulary: 668 unique words
-   3-gram patterns: 1,435
+   Training data: 131,849 words
+   Vocabulary: 11,889 unique words
+   3-gram patterns: 67,714
 
 TRY THESE SEED PHRASES:
 ----------------------------------------------------------------------
@@ -25,18 +25,12 @@ TRY THESE SEED PHRASES:
 
    === GENERATED TEXT #1 ===
    ------------------------------------------------------------
-   Input:  once upon a time
-   Output: a time in a distant land, there lived a merchant who had traveled to many countries and seen many wonders. he had amassed great wealth through his wisdom and virtue. a just ruler, the scholar taught, would gain the loyalty and love of the people's intellectual and moral capacities. the ruler and
-
-
-   === GENERATED TEXT #2 ===
-   ------------------------------------------------------------
-   Input:  the king was wise
-   Output: was wise ones continued to inspire people across all times and places. in doing so, they ensured that the universe seemed to follow mathematical principles, that nature operated according to laws that could be prevented. the physician trained many students who spread this knowledge throughout the kingdom and beyond. a mathematician in
+   Input:  the king
+   Output: the king during his mayoralty. the distinction of rank preserved. while they were together and yet, upon my word, i cannot imagine. what think you could not help frequently glancing her eye on charlotte. once or twice suggested to elizabeth and then, you need not conceal your age. i am not particularly
 
 
 ======================================================================
-  [OK] Session Complete | Generated 2 texts
+  [OK] Session Complete | Generated 1 texts
   [*] Results saved to: generated_results.txt
 ======================================================================
 
