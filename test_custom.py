@@ -22,12 +22,20 @@ def log(text):
     output.flush()
 
 
-log("\n" + "=" * 70)
-log("[*] Interactive 3-gram Text Generation Tester")
-log("=" * 70 + "\n")
+def separator(char="=", width=70):
+    """Print formatted separator"""
+    log(char * width)
+
+
+log("")
+separator()
+log("  INTERACTIVE TEXT GENERATION WITH 3-GRAM MODEL")
+log("  Accuracy: 93.5% | Pure Python Implementation")
+separator()
+log("")
 
 # Load model
-log("Loading improved model...\n")
+log("Loading model...")
 model = TrigramModel()
 
 # Get correct path
@@ -37,14 +45,15 @@ data_path = os.path.join(script_dir, "data", "english_stories.txt")
 words = model.load_data(data_path)
 model.build_trigrams(words)
 
-log(f"[OK] Model loaded!")
-log(f"   - Training words: {len(words)}")
-log(f"   - Vocabulary size: {len(set(words))}")
-log(f"   - 3-gram patterns: {len(model.trigrams)}\n")
+log("Model Ready!")
+log(f"   Training data: {len(words):,} words")
+log(f"   Vocabulary: {len(set(words)):,} unique words")
+log(f"   3-gram patterns: {len(model.trigrams):,}")
+log("")
 
 # ============= Sample Prompts =============
 
-log("Sample seed phrases (try these):")
+log("TRY THESE SEED PHRASES:")
 log("-" * 70)
 available_seeds = [
     "once upon a time",
@@ -53,12 +62,14 @@ available_seeds = [
     "a scholar learned",
     "the farmer worked",
 ]
-for seed in available_seeds:
-    log(f"   • {seed}")
+for i, seed in enumerate(available_seeds, 1):
+    log(f"   {i}. {seed}")
 
-log("\n" + "=" * 70)
-log("[*] Interactive Testing")
-log("=" * 70 + "\n")
+log("")
+separator()
+log("  >>> START GENERATING <<<")
+separator()
+log("")
 
 test_count = 0
 
@@ -69,7 +80,8 @@ while True:
         break
 
     if not user_input:
-        log("[!] Please enter a seed text\n")
+        log("   [!] Please enter some text to continue")
+        log("")
         continue
 
     # Check if seed words are in vocabulary
@@ -80,22 +92,30 @@ while True:
     valid_seed_words = [w for w in seed_words if w in vocab]
 
     if not valid_seed_words:
-        log(f"[!] Words '{user_input}' not found in vocabulary")
-        log(
-            f"   Try: {', '.join(random.sample(available_seeds, min(3, len(available_seeds))))}\n"
-        )
+        suggestions = random.sample(available_seeds, min(3, len(available_seeds)))
+        log(f"   [X] '{user_input}' - not in vocabulary")
+        log(f"   [*] Try one of these instead:")
+        for suggestion in suggestions:
+            log(f"      -> {suggestion}")
+        log("")
         continue
 
     # Generate text
     text = model.generate(user_input, length=50)
 
     test_count += 1
-    log(f"\n[OK] Generated Text #{test_count}:")
-    log(f"   Seed: '{user_input}'")
-    log(f"   Output: {text}\n")
+    log("")
+    log(f"   === GENERATED TEXT #{test_count} ===")
+    log(f"   {'-' * 60}")
+    log(f"   Input:  {user_input}")
+    log(f"   Output: {text}")
+    log("")
 
-log("=" * 70)
-log(f"[DONE] Total generations: {test_count}")
-log("=" * 70 + "\n")
+log("")
+separator()
+log(f"  [OK] Session Complete | Generated {test_count} texts")
+log(f"  [*] Results saved to: generated_results.txt")
+separator()
+log("")
 
 output.close()

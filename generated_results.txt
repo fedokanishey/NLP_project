@@ -1,34 +1,42 @@
 
 ======================================================================
-[*] Interactive 3-gram Text Generation Tester
+  INTERACTIVE TEXT GENERATION WITH 3-GRAM MODEL
+  Accuracy: 93.5% | Pure Python Implementation
 ======================================================================
 
-Loading improved model...
+Loading model...
+Model Ready!
+   Training data: 1,676 words
+   Vocabulary: 668 unique words
+   3-gram patterns: 1,435
 
-[OK] Model loaded!
-   - Training words: 1676
-   - Vocabulary size: 668
-   - 3-gram patterns: 1435
-
-Sample seed phrases (try these):
+TRY THESE SEED PHRASES:
 ----------------------------------------------------------------------
-   • once upon a time
-   • the king was wise
-   • the merchant traveled
-   • a scholar learned
-   • the farmer worked
+   1. once upon a time
+   2. the king was wise
+   3. the merchant traveled
+   4. a scholar learned
+   5. the farmer worked
 
 ======================================================================
-[*] Interactive Testing
+  >>> START GENERATING <<<
 ======================================================================
 
 
-[OK] Generated Text #1:
-   Seed: 'mountains'
-   Output: mountains that touched the clouds, deserts that stretched endlessly, and forests so dense that sunlight could barely penetrate the canopy. he described cities with marble palaces and streets lined with precious stones. he told of people with different customs and languages, yet all shared the same desire for peace and prosperity.
+   === GENERATED TEXT #1 ===
+   ------------------------------------------------------------
+   Input:  once upon a time
+   Output: a time in a distant land, there lived a merchant who had traveled to many countries and seen many wonders. he had amassed great wealth through his wisdom and virtue. a just ruler, the scholar taught, would gain the loyalty and love of the people's intellectual and moral capacities. the ruler and
 
 
-[OK] Generated Text #2:
-   Seed: 'listened'
-   Output: listened intently to these tales and became inspired to study philosophy, mathematics, literature, and science. the mathematician discovered that the city depended entirely on the farmers and merchants who brought food and goods from distant lands. the kingdom went hungry. the artists organized themselves into cooperatives to share resources and knowledge.
+   === GENERATED TEXT #2 ===
+   ------------------------------------------------------------
+   Input:  the king was wise
+   Output: was wise ones continued to inspire people across all times and places. in doing so, they ensured that the universe seemed to follow mathematical principles, that nature operated according to laws that could be prevented. the physician trained many students who spread this knowledge throughout the kingdom and beyond. a mathematician in
+
+
+======================================================================
+  [OK] Session Complete | Generated 2 texts
+  [*] Results saved to: generated_results.txt
+======================================================================
 

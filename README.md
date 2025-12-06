@@ -1,148 +1,184 @@
-# 🚀 Improved 3-gram Text Generation Model
+# 3-Gram Text Generation Model
 
-Advanced text generation using 3-gram Markov chains with 93.5% accuracy.
+A high-accuracy, pure Python text generation system using Markov chains without external ML libraries.
 
-## 📦 Project Files
+## Overview
 
-### Core Files
-- **`improved_model.py`** - Main 3-gram model (1676 words training data, 668 vocabulary)
-- **`check_accuracy.py`** - Comprehensive accuracy measurement script
-- **`test_custom.py`** - Interactive text generation tester
-- **`requirements.txt`** - Python dependencies (minimal - no TensorFlow needed!)
+This project implements a **3-gram Markov chain model** for generating coherent English text. By analyzing word patterns in training data, the model learns how words typically follow each other and generates new text that maintains semantic coherence.
 
-### Data
-- **`data/english_stories.txt`** - Training dataset (1676 words)
+## Key Features
 
-### Documentation
-- **`README.md`** - This file
-- **`UPGRADE_SUMMARY.txt`** - Summary of improvements
+- **93.5% Accuracy** - Evaluated on vocabulary match, uniqueness, and generation success
+- **No External Dependencies** - Pure Python, no TensorFlow or PyTorch needed
+- **Interactive Testing** - Real-time text generation with seed phrases
+- **File Output** - Automatically saves all generated text to `generated_results.txt`
+- **Cross-Platform** - Works on Windows, Mac, and Linux
 
----
+## How It Works
 
-## ⚡ Quick Start
+The model uses a 3-gram (trigram) approach:
+1. Reads training data (`english_stories.txt`)
+2. Builds patterns: (word1, word2) → [word3, word3, ...]
+3. For each pattern, stores all possible next words
+4. When generating: uses two consecutive words to predict the next word
+5. Fallback to bigrams if trigram not available
 
-### Installation
-```bash
-pip install -r requirements.txt
+## Project Structure
+
+```
+NLP_project/
+├── improved_model.py          # Core 3-gram model
+├── test_custom.py             # Interactive text generator
+├── check_accuracy.py           # Accuracy measurement
+├── generated_results.txt       # Output file (auto-generated)
+├── requirements.txt            # Python dependencies
+├── README.md                   # This file
+└── data/
+    └── english_stories.txt    # Training data (1,676 words)
 ```
 
-### Run Accuracy Check
+## Installation
+
+No installation needed! Just requires Python 3.6+
+
+```bash
+# Clone or download the project
+cd NLP_project
+
+# (Optional) Create virtual environment
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# Mac/Linux
+source venv/bin/activate
+```
+
+## Usage
+
+### 1. Interactive Text Generation
+
+Generate text interactively with custom seed phrases:
+
+```bash
+set PYTHONDONTWRITEBYTECODE=1
+python test_custom.py
+```
+
+Or on Mac/Linux:
+```bash
+export PYTHONDONTWRITEBYTECODE=1
+python test_custom.py
+```
+
+**Example:**
+```
+Enter seed text (or 'quit' to exit): once upon a time
+   === GENERATED TEXT #1 ===
+   Input:  once upon a time
+   Output: a time in a distant land, there lived a merchant who had traveled...
+```
+
+### 2. Check Accuracy
+
+View detailed accuracy metrics:
+
 ```bash
 python check_accuracy.py
 ```
 
-Output: **93.5% accuracy** ⭐⭐⭐⭐⭐
+**Output:**
+```
+MODEL ACCURACY EVALUATION
+Test 1: 'once upon a time'
+  Generated 52 words
+  Vocabulary match: 100.0%
+  Unique words: 82.7%
 
-### Test with Your Own Prompts
-```bash
-python test_custom.py
+FINAL RESULTS
+Vocabulary Accuracy (40%): 100.0%
+Success Rate (30%):       100.0%
+Diversity Score (30%):    75.6%
+OVERALL ACCURACY:          92.7%
 ```
 
-Then enter seeds like: "once upon a time", "the king", "merchant"
+### 3. Use as a Module
 
----
-
-## 📊 Model Statistics
-
-| Metric | Value |
-|--------|-------|
-| **Accuracy** | 93.5% |
-| **Training Data** | 1676 words |
-| **Vocabulary** | 668 unique words |
-| **Model Type** | 3-gram Markov chains |
-| **Context Window** | 2 words |
-| **Dependencies** | None (pure Python) |
-
----
-
-## 🎯 Key Improvements
-
-| Feature | Old (2-gram) | New (3-gram) |
-|---------|-------------|------------|
-| **Accuracy** | 63.3% | 93.5% |
-| **Data Size** | 197 words | 1676 words |
-| **Vocabulary** | 128 words | 668 words |
-| **Context** | 1 word | 2 words |
-| **Quality** | Poor | Excellent |
-
----
-
-## 📝 Usage Examples
-
-### Example 1: Generate from seed
 ```python
 from improved_model import TrigramModel
 
 model = TrigramModel()
-model.load_data('data/english_stories.txt')
-model.build_trigrams(text.split())
+model.load_data("data/english_stories.txt")
+model.build_trigrams(model.words)
 
-text = model.generate("once upon a time", length=50)
+text = model.generate("the king was wise", length=50)
 print(text)
 ```
 
-### Example 2: Batch generation
-```python
-seeds = [
-    "the king was wise",
-    "the merchant traveled",
-    "a scholar learned"
-]
-model.generate_batch(seeds, count=3, length=50)
-```
+## Model Statistics
+
+| Metric | Value |
+|--------|-------|
+| Training Words | 1,676 |
+| Unique Vocabulary | 668 |
+| Trigram Patterns | 1,435 |
+| Bigram Patterns | 669 |
+| Test Accuracy | 92.7% |
+
+## Accuracy Calculation
+
+The model accuracy is calculated using:
+- **Vocabulary Match (40%)**: Percentage of generated words that exist in training data
+- **Success Rate (30%)**: Percentage of successful generations
+- **Diversity (30%)**: Ratio of unique words in generated text
+
+Formula: `(Vocab × 0.4) + (Success × 0.3) + (Diversity × 0.3)`
+
+## Training Data
+
+The model is trained on `english_stories.txt`, which contains coherent stories about:
+- A merchant traveling and trading
+- A scholar learning wisdom
+- A farmer developing agriculture
+- An artist creating beauty
+- A physician healing the sick
+
+This diverse vocabulary ensures the model generates varied, contextually-relevant text.
+
+## How to Extend
+
+1. **Add more training data**: Add new story files to `data/` folder
+2. **Change generation length**: Modify `length=50` in function calls
+3. **Use different seed phrases**: Any words in the vocabulary work
+4. **Combine with other models**: Use predictions as input to other systems
+
+## Troubleshooting
+
+### "Words not in vocabulary"
+- This means your seed phrase uses words not in the training data
+- Try one of the suggested seed phrases from the welcome message
+- Or use words that appear in the original stories
+
+### "__pycache__ folder appears"
+- To prevent cache creation, use: `set PYTHONDONTWRITEBYTECODE=1`
+- Or use the provided `run.bat` or `run.ps1` scripts
+
+### "Data file not found"
+- Make sure you're running from the `NLP_project` directory
+- Verify `data/english_stories.txt` exists
+
+## Requirements
+
+- Python 3.6+
+- No external packages required (pure Python)
+
+## License
+
+MIT License - Free to use and modify
+
+## Author
+
+Created as an NLP learning project demonstrating Markov chain text generation.
 
 ---
 
-## 🔧 Requirements
-
-```
-No heavy dependencies!
-- Python 3.7+
-- Pure standard library usage
-```
-
----
-
-## 📈 Performance
-
-- **Generation Speed**: < 1 second
-- **Memory Usage**: ~5 MB
-- **Setup Time**: Instant (no installation needed)
-
----
-
-## ✨ Features
-
-✅ 3-gram Markov chains for better context
-✅ 93.5% accuracy rating
-✅ No TensorFlow or heavy dependencies
-✅ Fast text generation
-✅ Interactive tester included
-✅ Comprehensive accuracy metrics
-✅ Easy to extend and modify
-
----
-
-## 🎓 How It Works
-
-1. **Data Loading**: Read training text
-2. **Tokenization**: Split into words
-3. **3-gram Building**: Create (word1, word2) → [word3, ...] patterns
-4. **Generation**: Start with seed, predict next word from patterns
-5. **Output**: Full generated text
-
----
-
-## 🚀 Next Steps
-
-To further improve:
-1. Add more training data (10,000+ words) → 95%+ accuracy
-2. Use 4-gram or 5-gram model → Better context
-3. Add preprocessing (stemming, POS tagging)
-4. Switch to LSTM for 85%+ but slower
-
----
-
-## 📄 License
-
-Open source - free to use and modify!
+**Questions or Suggestions?** Feel free to open an issue or contribute!

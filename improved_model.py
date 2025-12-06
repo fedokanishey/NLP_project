@@ -34,8 +34,8 @@ class TrigramModel:
         self.words = words
         self.vocab = set(words)
 
-        print(f"[OK] Loaded {len(words)} words")
-        print(f"[OK] Vocabulary size: {len(self.vocab)}")
+        print(f"[OK] Loaded {len(words):,} words from training data")
+        print(f"[OK] Vocabulary: {len(self.vocab):,} unique words")
 
         return words
 
@@ -58,8 +58,8 @@ class TrigramModel:
             key = w1
             self.bigrams[key].append(w2)
 
-        print(f"[OK] Built {len(self.trigrams)} trigram patterns")
-        print(f"[OK] Built {len(self.bigrams)} bigram patterns")
+        print(f"[OK] Built {len(self.trigrams):,} trigram patterns")
+        print(f"[OK] Built {len(self.bigrams):,} bigram patterns")
 
     def generate(self, seed_text="", length=50):
         """Generate text using 3-grams"""
