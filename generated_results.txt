@@ -1,0 +1,34 @@
+
+======================================================================
+[*] Interactive 3-gram Text Generation Tester
+======================================================================
+
+Loading improved model...
+
+[OK] Model loaded!
+   - Training words: 1676
+   - Vocabulary size: 668
+   - 3-gram patterns: 1435
+
+Sample seed phrases (try these):
+----------------------------------------------------------------------
+   • once upon a time
+   • the king was wise
+   • the merchant traveled
+   • a scholar learned
+   • the farmer worked
+
+======================================================================
+[*] Interactive Testing
+======================================================================
+
+
+[OK] Generated Text #1:
+   Seed: 'mountains'
+   Output: mountains that touched the clouds, deserts that stretched endlessly, and forests so dense that sunlight could barely penetrate the canopy. he described cities with marble palaces and streets lined with precious stones. he told of people with different customs and languages, yet all shared the same desire for peace and prosperity.
+
+
+[OK] Generated Text #2:
+   Seed: 'listened'
+   Output: listened intently to these tales and became inspired to study philosophy, mathematics, literature, and science. the mathematician discovered that the city depended entirely on the farmers and merchants who brought food and goods from distant lands. the kingdom went hungry. the artists organized themselves into cooperatives to share resources and knowledge.
+
