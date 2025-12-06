@@ -20,24 +20,40 @@ DEFAULT_DATASET = "combined"
 
 # Dataset information
 DATASET_INFO = {
-    "original": {"words": 1677, "vocabulary": 668, "description": "Original stories (fast)"},
-    "gutenberg": {"words": 130173, "vocabulary": 9872, "description": "Gutenberg texts (large)"},
-    "combined": {"words": 131850, "vocabulary": 11927, "description": "Combined dataset (recommended)"},
+    "original": {
+        "words": 1677,
+        "vocabulary": 668,
+        "description": "Original stories (fast)",
+    },
+    "gutenberg": {
+        "words": 130173,
+        "vocabulary": 9872,
+        "description": "Gutenberg texts (large)",
+    },
+    "combined": {
+        "words": 131850,
+        "vocabulary": 11927,
+        "description": "Combined dataset (recommended)",
+    },
 }
+
 
 def get_dataset_path(dataset_name=None):
     """Get path to dataset file"""
     if dataset_name is None:
         dataset_name = DEFAULT_DATASET
-    
+
     if dataset_name not in DATASETS:
-        raise ValueError(f"Unknown dataset: {dataset_name}. Available: {list(DATASETS.keys())}")
-    
+        raise ValueError(
+            f"Unknown dataset: {dataset_name}. Available: {list(DATASETS.keys())}"
+        )
+
     path = DATASETS[dataset_name]
     if not os.path.exists(path):
         raise FileNotFoundError(f"Dataset not found: {path}")
-    
+
     return path
+
 
 def list_datasets():
     """List all available datasets"""

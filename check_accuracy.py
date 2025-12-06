@@ -5,7 +5,7 @@ Quick Accuracy Check - Compare all datasets
 import re
 import os
 import sys
-from improved_model import TrigramModel
+from improved_model import NGramModel
 from config import get_dataset_path, DATASET_INFO
 
 
@@ -31,21 +31,21 @@ def evaluate_dataset(dataset_name):
 
     # Build model
     print(f"[*] Building model...")
-    model = TrigramModel()
-    model.build_trigrams(words)
+    model = NGramModel()
+    model.build_ngrams(words)
 
     # Generate samples and calculate metrics
     # Use words that are definitely in vocabulary
     test_seeds = []
     vocab_list = list(model.vocab)
-    
+
     # Get diverse seeds from vocabulary
     if len(vocab_list) > 10:
-        indices = [0, len(vocab_list)//2, len(vocab_list)-1]
+        indices = [0, len(vocab_list) // 2, len(vocab_list) - 1]
         test_seeds = [vocab_list[i] for i in indices if len(vocab_list[i]) > 2]
-    
+
     test_seeds = test_seeds[:3] if test_seeds else vocab_list[:3]
-    
+
     if not test_seeds:
         print("[X] Could not find valid test seeds")
         return None

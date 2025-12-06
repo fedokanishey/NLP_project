@@ -8,7 +8,7 @@ Loading combined dataset...
 Model Ready!
    Training data: 131,849 words
    Vocabulary: 11,889 unique words
-   3-gram patterns: 67,714
+   3-gram patterns: 67,715
 
 TRY THESE SEED PHRASES:
 ----------------------------------------------------------------------
@@ -25,12 +25,18 @@ TRY THESE SEED PHRASES:
 
    === GENERATED TEXT #1 ===
    ------------------------------------------------------------
+   Input:  elizabeth was
+   Output: elizabeth was forced to put it off, and then i must endeavour to be satisfied with ignorance. not that i shall, though, she added to herself, and to those of her family aggravate this resentment in the healthiest way in the world. but are you certainforgive the questionare you quite certain that
+
+
+   === GENERATED TEXT #2 ===
+   ------------------------------------------------------------
    Input:  the king
-   Output: the king during his mayoralty. the distinction of rank preserved. while they were together and yet, upon my word, i cannot imagine. what think you could not help frequently glancing her eye on charlotte. once or twice suggested to elizabeth and then, you need not conceal your age. i am not particularly
+   Output: the king during his mayoralty. the distinction had, perhaps, been felt too strongly. it had given him an invitation also, if the family from longbourn would come in the evening. this was agreed to and mrs. philips protested that they would never be happy without him, so think it no harm to
 
 
 ======================================================================
-  [OK] Session Complete | Generated 1 texts
+  [OK] Session Complete | Generated 2 texts
   [*] Results saved to: generated_results.txt
 ======================================================================
 

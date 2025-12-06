@@ -13,7 +13,7 @@ Available datasets:
 import random
 import os
 import sys
-from improved_model import TrigramModel
+from improved_model import NGramModel
 from config import get_dataset_path, DATASET_INFO
 
 # Get dataset from command line or use default
@@ -53,9 +53,9 @@ log("")
 
 # Load model
 log(f"Loading {dataset} dataset...")
-model = TrigramModel()
+model = NGramModel()
 words = model.load_data(data_path)
-model.build_trigrams(words)
+model.build_ngrams(words)
 
 log("Model Ready!")
 log(f"   Training data: {len(words):,} words")
@@ -85,7 +85,10 @@ valid_seeds = [s for s in available_seeds if all(w in vocab for w in s.split())]
 if not valid_seeds:
     # Fall back to random words from vocabulary
     sample_words = random.sample(list(vocab), min(5, len(vocab)))
-    valid_seeds = [" ".join(random.sample(sample_words, min(2, len(sample_words)))) for _ in range(5)]
+    valid_seeds = [
+        " ".join(random.sample(sample_words, min(2, len(sample_words))))
+        for _ in range(5)
+    ]
 
 for i, seed in enumerate(valid_seeds[:5], 1):
     log(f"   {i}. {seed}")
