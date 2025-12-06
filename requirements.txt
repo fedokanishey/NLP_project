@@ -1,7 +1,0 @@
-# Minimal requirements - no heavy dependencies needed!
-# The model uses only Python standard library
-# These are OPTIONAL for additional analysis
-
-# (Leave empty for pure Python implementation)
-# Optional: For advanced analysis only
-# numpy==1.24.3

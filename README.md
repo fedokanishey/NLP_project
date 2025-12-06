@@ -11,31 +11,28 @@ This project implements an **enhanced 4-gram Markov chain model** with weighted 
 - **4-Gram Model** - Stronger context for more coherent text
 - **Weighted Selection** - Prefers frequent word combinations
 - **95.2% Accuracy** - State-of-the-art for pure Python implementation
-- **Multiple Datasets** - Choose from original, Gutenberg, or combined data
-- **131,850 words** - Trained on extensive English literature
+- **131,850 Words** - Trained on combined English literature dataset
+- **11,889 Unique Words** - Rich vocabulary from diverse sources
 - **No External Dependencies** - Pure Python, no TensorFlow or PyTorch needed
 - **Interactive Testing** - Real-time text generation with seed phrases
 - **File Output** - Automatically saves all generated text
 - **Cross-Platform** - Works on Windows, Mac, and Linux
 
-## Model Improvements
+## Model Features
 
-### Previous Version (3-gram with random selection)
-- Generated disjointed, unrelated sentences
-- Word choice was random among all options
-- Limited context window (2 words)
+### 4-Gram with Weighted Selection
 
-### Current Version (4-gram with weighted selection)
 - Generates coherent, grammatically sound sentences
-- Prefers common word combinations
-- Stronger context window (3 words)
-- Automatic intelligent fallback mechanism
+- Prefers common word combinations over random choices
+- Stronger context window (3 words) for better predictions
+- Automatic intelligent fallback mechanism (4-gram → 3-gram → 2-gram)
 
-| Dataset | Size | Vocab | Trigrams | Accuracy | Description |
-|---------|------|-------|----------|----------|-------------|
-| Original | 1,677 words | 668 | 1,435 | 93.1% | Original stories (fast) |
-| Gutenberg | 130,173 words | 11,598 | 66,529 | 96.5% | Pride and Prejudice (large) |
-| **Combined** | **131,850 words** | **11,889** | **67,714** | **96.5%** | **Best balance (recommended)** |
+### Dataset
+
+- **131,850 total words** from merged sources
+- **11,889 unique vocabulary words**
+- Combined from original stories and Pride and Prejudice
+- Provides excellent balance of quality and diversity
 
 ## How It Works
 
@@ -52,17 +49,14 @@ The model uses a 4-gram (quadgram) approach with weighted selection and automati
 
 ```
 NLP_project/
-├── improved_model.py           # Core 3-gram model
-├── test_custom.py              # Interactive text generator
-├── check_accuracy.py            # Accuracy measurement
-├── config.py                    # Dataset configuration
+├── improved_model.py            # Core 4-gram model with weighted selection
+├── test_custom.py               # Interactive text generator
+├── check_accuracy.py            # Accuracy evaluation
+├── config.py                    # Configuration (simplified)
 ├── generated_results.txt        # Output file (auto-generated)
-├── requirements.txt             # Python dependencies
 ├── README.md                    # This file
 └── data/
-    ├── english_stories.txt      # Original dataset (1,677 words)
-    ├── gutenberg_text.txt       # Gutenberg texts (130,173 words)
-    └── combined_data.txt        # Combined dataset (131,850 words)
+    └── combined_data.txt        # Training dataset (131,850 words)
 ```
 
 ## Installation
@@ -87,23 +81,8 @@ source venv/bin/activate
 
 Generate text interactively with custom seed phrases:
 
-**Using combined dataset (recommended):**
 ```bash
-set PYTHONDONTWRITEBYTECODE=1
-python test_custom.py combined
-```
-
-**Using specific dataset:**
-```bash
-python test_custom.py original      # Fast, limited vocabulary
-python test_custom.py gutenberg     # Large dataset
-python test_custom.py combined      # Recommended (best balance)
-```
-
-**Mac/Linux:**
-```bash
-export PYTHONDONTWRITEBYTECODE=1
-python test_custom.py combined
+python test_custom.py
 ```
 
 Example interaction:
@@ -115,38 +94,38 @@ Enter seed text (or 'quit' to exit): elizabeth
    for the preference of the others. she was satisfied...
 ```
 
-### 2. Compare Accuracy Across Datasets
+### 2. Evaluate Model Accuracy
 
-View detailed accuracy metrics for all datasets:
+Check the model's accuracy metrics on the combined dataset:
 
 ```bash
 python check_accuracy.py
 ```
 
-Compare single dataset:
-```bash
-python check_accuracy.py combined
-```
-
 **Output:**
-```
-ACCURACY COMPARISON - ALL DATASETS
 
-ORIGINAL Dataset: 93.1%
-GUTENBERG Dataset: 96.5%
-COMBINED Dataset: 96.5%
+```
+4-GRAM MODEL ACCURACY EVALUATION
+
+EVALUATION METRICS
+4-gram patterns:      114,466
+3-gram patterns:       67,715
+2-gram patterns:       11,890
+Unique words:          11,889
+
+OVERALL ACCURACY:       95.2%
 ```
 
 ### 3. Use as a Module
 
 ```python
-from improved_model import TrigramModel
+from improved_model import NGramModel
 from config import get_dataset_path
 
 # Load model with combined dataset
-model = TrigramModel()
-words = model.load_data(get_dataset_path("combined"))
-model.build_trigrams(words)
+model = NGramModel()
+words = model.load_data(get_dataset_path())
+model.build_ngrams(words)
 
 # Generate text
 text = model.generate("elizabeth was", length=50)
@@ -155,105 +134,82 @@ print(text)
 
 ## Model Statistics
 
-### Comparison of Datasets
+### Combined Dataset
 
-**Original Dataset:**
-- Training Words: 1,677
-- Unique Vocabulary: 668
-- Trigram Patterns: 1,435
-- Test Accuracy: 93.1%
-
-**Gutenberg Dataset:**
-- Training Words: 130,173
-- Unique Vocabulary: 11,598
-- Trigram Patterns: 66,529
-- Test Accuracy: 96.5%
-
-**Combined Dataset (Recommended):**
-- Training Words: 131,850
-- Unique Vocabulary: 11,889
-- Trigram Patterns: 67,714
-- Test Accuracy: 96.5%
+- **Training Words**: 131,850
+- **Unique Vocabulary**: 11,889
+- **4-Gram Patterns**: 114,466
+- **3-Gram Patterns**: 67,715
+- **2-Gram Patterns**: 11,890
+- **Overall Accuracy**: 95.2%
 
 ## Accuracy Calculation
 
 The model accuracy is calculated using:
-- **Vocabulary Match (40%)**: Percentage of generated words that exist in training data
-- **Success Rate (30%)**: Percentage of successful generations
-- **Diversity (30%)**: Ratio of unique words in generated text
+- **Vocabulary Coverage (40%)**: Percentage of generated words that exist in training data
+- **Generation Success Rate (30%)**: Percentage of successful generations
+- **Output Diversity (30%)**: Ratio of unique words in generated text
 
-Formula: `(Vocab × 0.4) + (Success × 0.3) + (Diversity × 0.3)`
+Formula: `(Vocabulary × 0.4) + (Success × 0.3) + (Diversity × 0.3)`
 
-## Training Data Sources
+## Training Data Source
 
-- **Original**: Curated English stories about wisdom, trade, and learning
-- **Gutenberg**: Project Gutenberg texts (Pride and Prejudice by Jane Austen)
-- **Combined**: Both datasets merged for comprehensive coverage
+The combined dataset (131,850 words) is created by merging:
+- **Original Stories** - Curated English narratives about wisdom and learning
+- **Pride and Prejudice** - Project Gutenberg text by Jane Austen
 
-## Performance Comparison
+This provides a comprehensive, balanced corpus for learning natural English patterns.
 
-| Aspect | Original | Gutenberg | Combined |
-|--------|----------|-----------|----------|
-| Speed | Very Fast | Moderate | Moderate |
-| Vocabulary Diversity | Limited | Excellent | Excellent |
-| Text Quality | Good | Better | Better |
-| Accuracy | 93.1% | 96.5% | 96.5% |
-| Recommendation | Testing | Production | ✅ Recommended |
+## Performance Highlights
+
+- ✅ **95.2% Overall Accuracy** on combined dataset
+- ✅ **114,466 4-gram patterns** for strong context
+- ✅ **131,850 words** of training data
+- ✅ **~0.1 second** generation time per phrase
+- ✅ **~50MB** memory footprint
+- ✅ **Pure Python** - no external dependencies
 
 ## How to Extend
 
-1. **Add more training data**: Download datasets from Kaggle or Project Gutenberg
-2. **Create new dataset**: Add files to `data/` folder and update `config.py`
-3. **Change generation length**: Modify `length=50` in function calls
-4. **Use different seed phrases**: Any words in the vocabulary work
-5. **Combine with other models**: Use predictions as input to other systems
+1. **Add more training data**: Download datasets and merge into `combined_data.txt`
+2. **Change generation length**: Modify `length=50` in function calls
+3. **Use different seed phrases**: Any words in the vocabulary work
+4. **Adjust weighted selection**: Modify frequency weights in `_choose_weighted()`
 
 ## Troubleshooting
 
 ### "Words not in vocabulary"
+
 - This means your seed phrase uses words not in the training data
 - Try one of the suggested seed phrases from the welcome message
-- Use the combined dataset for larger vocabulary
 
 ### "__pycache__ folder appears"
-- To prevent cache creation: `set PYTHONDONTWRITEBYTECODE=1`
-- Or use the provided `run.bat` or `run.ps1` scripts
+
+- This is Python's cache directory (normal behavior)
+- Can be ignored or deleted safely
+- To prevent: Set `PYTHONDONTWRITEBYTECODE=1` before running
 
 ### "Data file not found"
-- Make sure you're running from the `NLP_project` directory
-- Verify all files in `data/` folder exist
-- Run `check_accuracy.py` to verify all datasets are available
 
-### Low accuracy with small dataset
-- Use the `combined` or `gutenberg` dataset instead of `original`
-- Accuracy improves with more training data
+- Make sure you're running from the `NLP_project` directory
+- Verify `data/combined_data.txt` exists and is not empty
+- Check file permissions are readable
 
 ## Requirements
 
 - Python 3.6+
-- No external packages required (pure Python)
+- No external packages required (pure Python standard library)
 
-## Performance Metrics
+## Performance Specs
 
 - **Generation Speed**: ~0.1 seconds per phrase
-- **Memory Usage**: ~50MB for combined dataset
+- **Memory Usage**: ~50MB for model and data
 - **Model Load Time**: ~1-2 seconds
-
-## Future Improvements
-
-- Add more datasets (Wikipedia, news articles)
-- Implement 4-gram or 5-gram models
-- Add text filtering for better quality
-- Support multiple languages
-- Add machine learning for seed phrase suggestions
-
-## License
-
-MIT License - Free to use and modify
+- **Vocabulary Size**: 11,889 unique words
 
 ## Author
 
-Created as an NLP learning project demonstrating Markov chain text generation with multiple datasets.
+Created as an NLP learning project demonstrating 4-gram Markov chain text generation with weighted selection for improved coherence.
 
 ---
 

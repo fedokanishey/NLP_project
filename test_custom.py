@@ -1,30 +1,14 @@
 """
 Interactive Text Generation Tester
 ===================================
-Test the improved 3-gram model with your own prompts!
-Run: python test_custom.py [dataset_name]
-
-Available datasets:
-  - original: 1,677 words (fast)
-  - gutenberg: 130,173 words (large)
-  - combined: 131,850 words (recommended)
+Generate coherent English text using 4-gram model
+Run: python test_custom.py
 """
 
 import random
 import os
-import sys
 from improved_model import NGramModel
 from config import get_dataset_path, DATASET_INFO
-
-# Get dataset from command line or use default
-dataset = sys.argv[1] if len(sys.argv) > 1 else "combined"
-
-# Validate dataset
-try:
-    data_path = get_dataset_path(dataset)
-except (ValueError, FileNotFoundError) as e:
-    print(f"[!] {e}")
-    sys.exit(1)
 
 # Set up file for saving results
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -46,56 +30,44 @@ def separator(char="=", width=70):
 
 log("")
 separator()
-log("  INTERACTIVE TEXT GENERATION WITH 3-GRAM MODEL")
-log(f"  Dataset: {dataset.upper()} | {DATASET_INFO[dataset]['description']}")
+log("  4-GRAM TEXT GENERATION MODEL")
+log(
+    f"  Dataset: {DATASET_INFO['words']:,} words | Vocab: {DATASET_INFO['vocabulary']:,}"
+)
 separator()
 log("")
 
 # Load model
-log(f"Loading {dataset} dataset...")
+log("Loading model...")
 model = NGramModel()
+data_path = get_dataset_path()
 words = model.load_data(data_path)
 model.build_ngrams(words)
 
 log("Model Ready!")
-log(f"   Training data: {len(words):,} words")
-log(f"   Vocabulary: {len(set(words)):,} unique words")
-log(f"   3-gram patterns: {len(model.trigrams):,}")
+log(f"   4-gram patterns: {len(model.fourgrams):,}")
+log(f"   Weighted selection enabled")
 log("")
 
-# ============= Sample Prompts (from vocabulary) =============
+# Get sample seeds from vocabulary
+vocab = model.vocab
+sample_words = list(vocab)
+if len(sample_words) > 5:
+    available_seeds = [
+        " ".join([sample_words[i % len(sample_words)] for i in range(j * 1, j * 2)])
+        for j in range(1, 6)
+    ]
+else:
+    available_seeds = [" ".join(sample_words[:2])]
 
 log("TRY THESE SEED PHRASES:")
 log("-" * 70)
-# Find valid seed phrases from the vocabulary
-vocab = set(words)
-available_seeds = [
-    "once upon a time",
-    "the king was wise",
-    "the merchant traveled",
-    "a scholar learned",
-    "the farmer worked",
-    "the world was",
-    "in the beginning",
-    "the land was",
-]
-
-# Filter to only available seeds
-valid_seeds = [s for s in available_seeds if all(w in vocab for w in s.split())]
-if not valid_seeds:
-    # Fall back to random words from vocabulary
-    sample_words = random.sample(list(vocab), min(5, len(vocab)))
-    valid_seeds = [
-        " ".join(random.sample(sample_words, min(2, len(sample_words))))
-        for _ in range(5)
-    ]
-
-for i, seed in enumerate(valid_seeds[:5], 1):
+for i, seed in enumerate(available_seeds[:5], 1):
     log(f"   {i}. {seed}")
 
 log("")
 separator()
-log("  >>> START GENERATING <<<")
+log("  >>> GENERATE TEXT <<<")
 separator()
 log("")
 
@@ -117,7 +89,7 @@ while True:
     valid_seed_words = [w for w in seed_words if w in vocab]
 
     if not valid_seed_words:
-        suggestions = random.sample(valid_seeds, min(3, len(valid_seeds)))
+        suggestions = random.sample(available_seeds, min(3, len(available_seeds)))
         log(f"   [X] '{user_input}' - not in vocabulary")
         log(f"   [*] Try one of these instead:")
         for suggestion in suggestions:

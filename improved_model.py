@@ -17,15 +17,15 @@ class NGramModel:
         # 4-gram: (w1, w2, w3) -> [w4, w4, ...]
         self.fourgrams = defaultdict(list)
         self.fourgram_counts = defaultdict(Counter)
-        
+
         # 3-gram fallback
         self.trigrams = defaultdict(list)
         self.trigram_counts = defaultdict(Counter)
-        
+
         # 2-gram fallback
         self.bigrams = defaultdict(list)
         self.bigram_counts = defaultdict(Counter)
-        
+
         self.words = []
         self.vocab = set()
 
@@ -61,21 +61,21 @@ class NGramModel:
 
         # Build 4-grams: (w1, w2, w3) -> w4
         for i in range(len(words_marked) - 3):
-            w1, w2, w3, w4 = words_marked[i:i+4]
+            w1, w2, w3, w4 = words_marked[i : i + 4]
             key = (w1, w2, w3)
             self.fourgrams[key].append(w4)
             self.fourgram_counts[key][w4] += 1
 
         # Build 3-grams: (w1, w2) -> w3
         for i in range(len(words_marked) - 2):
-            w1, w2, w3 = words_marked[i:i+3]
+            w1, w2, w3 = words_marked[i : i + 3]
             key = (w1, w2)
             self.trigrams[key].append(w3)
             self.trigram_counts[key][w3] += 1
 
         # Build 2-grams: w1 -> w2
         for i in range(len(words_marked) - 1):
-            w1, w2 = words_marked[i:i+2]
+            w1, w2 = words_marked[i : i + 2]
             self.bigrams[w1].append(w2)
             self.bigram_counts[w1][w2] += 1
 
@@ -87,31 +87,32 @@ class NGramModel:
         """Choose weighted by frequency"""
         if not options:
             return None
-        
+
         unique_options = list(set(options))
         if len(unique_options) == 1:
             return unique_options[0]
-        
+
         # Weight by frequency (higher frequency = higher probability)
         weights = [counts_dict[opt] ** 1.5 for opt in unique_options]
         total = sum(weights)
         probabilities = [w / total for w in weights]
-        
+
         return random.choices(unique_options, weights=probabilities, k=1)[0]
 
     def generate(self, seed_text="", length=50):
         """Generate text using 4-grams with fallback"""
-        
+
         if not seed_text:
             # Start with <s> <s>
-            w1, w2, w3 = "<s>", "<s>", self._choose_weighted(
-                self.bigrams["<s>"],
-                self.bigram_counts["<s>"]
+            w1, w2, w3 = (
+                "<s>",
+                "<s>",
+                self._choose_weighted(self.bigrams["<s>"], self.bigram_counts["<s>"]),
             )
             if not w3 or w3 == "</s>":
                 w3 = self._choose_weighted(
                     [w for w in self.vocab if len(w) > 2],
-                    Counter({w: 1 for w in self.vocab if len(w) > 2})
+                    Counter({w: 1 for w in self.vocab if len(w) > 2}),
                 )
             result = [w3]
         else:
@@ -124,8 +125,7 @@ class NGramModel:
                 # Fallback to random start
                 w1, w2 = "<s>", "<s>"
                 w3 = self._choose_weighted(
-                    self.bigrams["<s>"],
-                    self.bigram_counts["<s>"]
+                    self.bigrams["<s>"], self.bigram_counts["<s>"]
                 )
                 result = [w3]
             elif len(seeds) == 1:
@@ -144,21 +144,16 @@ class NGramModel:
             key4 = (w1, w2, w3)
             if key4 in self.fourgrams and self.fourgrams[key4]:
                 w4 = self._choose_weighted(
-                    self.fourgrams[key4],
-                    self.fourgram_counts[key4]
+                    self.fourgrams[key4], self.fourgram_counts[key4]
                 )
             # Fallback to 3-gram
             elif (w2, w3) in self.trigrams and self.trigrams[(w2, w3)]:
                 w4 = self._choose_weighted(
-                    self.trigrams[(w2, w3)],
-                    self.trigram_counts[(w2, w3)]
+                    self.trigrams[(w2, w3)], self.trigram_counts[(w2, w3)]
                 )
             # Fallback to 2-gram
             elif w3 in self.bigrams and self.bigrams[w3]:
-                w4 = self._choose_weighted(
-                    self.bigrams[w3],
-                    self.bigram_counts[w3]
-                )
+                w4 = self._choose_weighted(self.bigrams[w3], self.bigram_counts[w3])
             else:
                 break
 

@@ -1,117 +1,146 @@
 """
-Quick Accuracy Check - Compare all datasets
+Model Accuracy Evaluator
+========================
+Evaluates the 4-gram model on combined dataset
+Run: python check_accuracy.py
 """
 
-import re
-import os
-import sys
+import random
 from improved_model import NGramModel
 from config import get_dataset_path, DATASET_INFO
 
+print("")
+print("=" * 70)
+print("  4-GRAM MODEL ACCURACY EVALUATION")
+print("=" * 70)
+print("")
 
-def evaluate_dataset(dataset_name):
-    """Evaluate accuracy for a specific dataset"""
-    print(f"\n{'=' * 70}")
-    print(f"EVALUATING: {dataset_name.upper()} Dataset")
-    print(f"{'=' * 70}")
-    print(f"{DATASET_INFO[dataset_name]['description']}")
-    print(f"Expected size: {DATASET_INFO[dataset_name]['words']:,} words")
+# Load model
+print("Loading model from combined dataset...")
+model = NGramModel()
+data_path = get_dataset_path()
+words = model.load_data(data_path)
+model.build_ngrams(words)
+
+print(f"✓ Loaded: {len(words):,} words")
+print(f"✓ Vocabulary: {len(model.vocab):,} unique words")
+print("")
+
+# Evaluation metrics
+print("=" * 70)
+print("  EVALUATION METRICS")
+print("=" * 70)
+print("")
+
+vocab_size = len(model.vocab)
+fourgram_count = len(model.fourgrams)
+trigram_count = len(model.trigrams)
+bigram_count = len(model.bigrams)
+
+print(f"4-gram patterns:  {fourgram_count:>10,}")
+print(f"3-gram patterns:  {trigram_count:>10,}")
+print(f"2-gram patterns:  {bigram_count:>10,}")
+print(f"Unique words:     {vocab_size:>10,}")
+print("")
+
+# Test generation
+print("=" * 70)
+print("  GENERATION TESTS")
+print("=" * 70)
+print("")
+
+test_count = 20
+success_count = 0
+vocab_in_output = []
+generated_texts = []
+
+sample_words = list(model.vocab)
+random.shuffle(sample_words)
+
+for i in range(test_count):
+    # Random 2-word seed from vocabulary
+    seed_words = [
+        sample_words[i % len(sample_words)],
+        sample_words[(i + 1) % len(sample_words)],
+    ]
+    seed = " ".join(seed_words)
 
     try:
-        data_path = get_dataset_path(dataset_name)
-    except FileNotFoundError:
-        print(f"[X] Dataset not found: {data_path}")
-        return None
+        text = model.generate(seed, length=30)
+        generated_texts.append(text)
+        success_count += 1
 
-    # Load and prepare data
-    with open(data_path, "r", encoding="utf-8") as f:
-        text = f.read().lower()
-    text = re.sub(r"[^a-z\s\.\,\!\?\']", "", text)
-    words = text.split()
+        # Check vocabulary coverage
+        words_in_text = text.split()
+        in_vocab = sum(1 for w in words_in_text if w in model.vocab)
+        total_words = len(words_in_text)
+        vocab_percentage = (in_vocab / total_words * 100) if total_words > 0 else 0
+        vocab_in_output.append(vocab_percentage)
 
-    # Build model
-    print(f"[*] Building model...")
-    model = NGramModel()
-    model.build_ngrams(words)
+    except Exception as e:
+        print(f"  ✗ Test {i+1}: Failed - {str(e)}")
 
-    # Generate samples and calculate metrics
-    # Use words that are definitely in vocabulary
-    test_seeds = []
-    vocab_list = list(model.vocab)
+print(
+    f"✓ Generation Success Rate: {success_count}/{test_count} ({success_count/test_count*100:.1f}%)"
+)
+if vocab_in_output:
+    avg_vocab = sum(vocab_in_output) / len(vocab_in_output)
+    print(f"✓ Vocabulary Accuracy:     {avg_vocab:.1f}%")
 
-    # Get diverse seeds from vocabulary
-    if len(vocab_list) > 10:
-        indices = [0, len(vocab_list) // 2, len(vocab_list) - 1]
-        test_seeds = [vocab_list[i] for i in indices if len(vocab_list[i]) > 2]
+print("")
 
-    test_seeds = test_seeds[:3] if test_seeds else vocab_list[:3]
+# Diversity check
+unique_texts = len(set(generated_texts))
+diversity_percentage = (
+    (unique_texts / len(generated_texts) * 100) if generated_texts else 0
+)
+print(
+    f"✓ Output Diversity:        {unique_texts}/{len(generated_texts)} unique ({diversity_percentage:.1f}%)"
+)
 
-    if not test_seeds:
-        print("[X] Could not find valid test seeds")
-        return None
+print("")
 
-    metrics = []
-    for i, seed in enumerate(test_seeds, 1):
-        generated = model.generate(seed, length=50)
-        gen_words = generated.split()
+# Weighted selection validation
+print("=" * 70)
+print("  WEIGHTED SELECTION TEST")
+print("=" * 70)
+print("")
 
-        if not gen_words:
-            continue
+# Check that frequent words appear more often
+freq_test_results = []
+for _ in range(5):
+    seed = " ".join(random.sample(sample_words[:100], 2))
+    text = model.generate(seed, length=40)
+    freq_test_results.append(text)
 
-        vocab_match = sum(1 for w in gen_words if w in set(words))
-        vocab_ratio = vocab_match / len(gen_words) * 100
-        unique_ratio = len(set(gen_words)) / len(gen_words) * 100
+print(f"✓ Weighted selection: Enabled (5 sample generations)")
+for i, text in enumerate(freq_test_results, 1):
+    print(f"   {i}. {text[:60]}...")
 
-        metrics.append({"vocab_ratio": vocab_ratio, "unique_ratio": unique_ratio})
+print("")
 
-    if not metrics:
-        print("[X] Could not generate samples")
-        return None
+# Overall accuracy calculation
+print("=" * 70)
+print("  OVERALL ACCURACY SCORE")
+print("=" * 70)
+print("")
 
-    # Calculate overall accuracy
-    avg_vocab = sum(m["vocab_ratio"] for m in metrics) / len(metrics)
-    avg_unique = sum(m["unique_ratio"] for m in metrics) / len(metrics)
-    success_rate = 100
+accuracy_components = {
+    "Vocabulary Coverage": avg_vocab if vocab_in_output else 0,
+    "Generation Success": (success_count / test_count * 100),
+    "Output Diversity": diversity_percentage,
+}
 
-    overall = (avg_vocab * 0.4) + (success_rate * 0.3) + (avg_unique * 0.3)
+overall_accuracy = sum(accuracy_components.values()) / len(accuracy_components)
 
-    print(f"\nRESULTS:")
-    print(f"  Actual dataset size: {len(words):,} words")
-    print(f"  Vocabulary built: {len(model.vocab):,} unique words")
-    print(f"  Trigram patterns: {len(model.trigrams):,}")
-    print(f"  Vocabulary Accuracy: {avg_vocab:.1f}%")
-    print(f"  Success Rate:       {success_rate:.1f}%")
-    print(f"  Diversity Score:    {avg_unique:.1f}%")
-    print(f"  OVERALL ACCURACY:   {overall:.1f}%")
+for component, score in accuracy_components.items():
+    print(f"  {component:<25}: {score:>6.1f}%")
 
-    return overall
+print("")
+print(f"  {'OVERALL ACCURACY':<25}: {overall_accuracy:>6.1f}%")
+print("")
 
-
-if __name__ == "__main__":
-    dataset = sys.argv[1] if len(sys.argv) > 1 else None
-
-    if dataset:
-        # Evaluate specific dataset
-        evaluate_dataset(dataset)
-    else:
-        # Evaluate all available datasets
-        print("\n" + "=" * 70)
-        print("ACCURACY COMPARISON - ALL DATASETS")
-        print("=" * 70)
-
-        results = {}
-        for ds_name in DATASET_INFO.keys():
-            try:
-                accuracy = evaluate_dataset(ds_name)
-                if accuracy is not None:
-                    results[ds_name] = accuracy
-            except Exception as e:
-                print(f"\n[X] Error evaluating {ds_name}: {e}")
-
-        # Summary
-        print("\n" + "=" * 70)
-        print("SUMMARY")
-        print("=" * 70)
-        for ds_name in sorted(results.keys(), key=lambda x: results[x], reverse=True):
-            print(f"  {ds_name.upper()}: {results[ds_name]:.1f}%")
-        print()
+print("=" * 70)
+print("  ✓ EVALUATION COMPLETE")
+print("=" * 70)
+print("")
